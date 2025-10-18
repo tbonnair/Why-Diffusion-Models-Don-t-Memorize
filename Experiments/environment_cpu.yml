@@ -1,0 +1,32 @@
+name: diffusion-models
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  # Python
+  - python=3.10
+  
+  # PyTorch (CPU-only version)
+  - pytorch
+  - torchvision
+  - cpuonly
+  
+  # Core scientific computing
+  - numpy
+  - scipy
+  
+  # Plotting and visualization
+  - matplotlib
+  
+  # Image processing
+  - pillow
+  
+  # Progress bars
+  - tqdm
+  
+  # Natural sorting
+  - natsort
+  
+  # Pip (for any additional packages)
+  - pip

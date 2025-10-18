@@ -1,3 +1,11 @@
+*script_run.slurm
+.DS_Store
+Experiments/src/Plots/*
+Experiments/src/Saves/*
+Experiments/src/Generation/*
+Experiments/src/Evaluation/*
+Experiments/src/Analysis/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

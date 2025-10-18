@@ -1,0 +1,33 @@
+# Requirements for Diffusion Models Project
+# Install with: pip install -r requirements.txt
+
+# PyTorch - Choose ONE of the following based on your system:
+# For CUDA 11.8:
+torch>=2.0.0
+torchvision>=0.15.0
+
+# For CUDA 12.1, use:
+# torch>=2.0.0+cu121
+# torchvision>=0.15.0+cu121
+# --extra-index-url https://download.pytorch.org/whl/cu121
+
+# For CPU-only, use:
+# torch>=2.0.0+cpu
+# torchvision>=0.15.0+cpu
+# --extra-index-url https://download.pytorch.org/whl/cpu
+
+# Core scientific computing
+numpy>=1.23.0
+scipy>=1.10.0
+
+# Plotting and visualization
+matplotlib>=3.7.0
+
+# Image processing
+Pillow>=9.0.0
+
+# Progress bars
+tqdm>=4.65.0
+
+# Natural sorting
+natsort>=8.3.0
