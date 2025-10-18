@@ -35,7 +35,7 @@ parser.add_argument('--index', type=int,
 parser.add_argument('--dataset', type=str,
                     help='Dataset used to train the model.')
 parser.add_argument('--Nsamples', type=int,
-                    help='Number of samples to generate.')
+                    help='Number of samples to generate (should be multiple of 100).')
 
 args = parser.parse_args()
 print(args)
