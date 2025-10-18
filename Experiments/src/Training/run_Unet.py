@@ -1,6 +1,4 @@
-#%% 
-# %reload_ext autoreload
-# %autoreload 2
+#%%
 import matplotlib.pyplot as plt
 import torch
 from torch import nn
@@ -10,7 +8,7 @@ import numpy as np
 import argparse
 import glob
 
-sys.path.insert(1, './Utils/')
+sys.path.insert(1, '../Utils/')
 import Unet
 import Plot
 import Diffusion
@@ -24,7 +22,6 @@ parser = argparse.ArgumentParser("Diffusion on CelebA dataset with U-net.")
 parser.add_argument("-n", "--num", help="Number of training data", type=int)
 parser.add_argument("-i", "--index", help="Index for the dataset (0 or 1)", type=int)
 parser.add_argument("-s", "--img_size", help="Size of the images to use", type=int)
-# parser.add_argument("-B", "--batch_size", help="Batch size for optimization", type=int)
 parser.add_argument("-LR", "--learning_rate", help="Learning rate for optimization", type=float)
 parser.add_argument("-O", "--optim", help="Optimisation type (SGD_Momentum or Adam)", type=str)
 parser.add_argument("-W", "--nbase", help="Number of base filters", type=str)
@@ -32,10 +29,10 @@ parser.add_argument("-t", "--time", help="Diffusion timestep", type=int)
 args = vars(parser.parse_args())
 print(args)
 
+# Get arguments
 n = args['num']
 index = args['index']
 size = args['img_size']
-# batch_size = args['batch_size']
 lr = args['learning_rate']
 optim = args['optim']
 n_base = int(args['nbase'])
@@ -45,17 +42,12 @@ if time_step == -1:
 else:
     mode = 'fixed_time'
 
-# Config training
-# n_base = 32
+# Overwrite config with command line arguments
 DATASET = 'CelebA'
 config = cfg.load_config(DATASET)
 config.IMG_SHAPE = (1, size, size)
 config.n_images = n
-config.BATCH_SIZE = 128 #min(512, config.n_images)
-n_step_per_epoch = config.n_images // config.BATCH_SIZE
-N_EPOCHS = int(2e6)
-config.N_STEPS = int(1e6) #int(n_step_per_epoch * N_EPOCHS)
-config.LOSS_SCORE_EMP = False
+config.BATCH_SIZE = min(512, n)
 config.OPTIM = optim
 config.LR = lr
 config.mode = mode
@@ -71,8 +63,6 @@ elif config.mode == 'fixed_time':
                                         config.LR, index, time_step)
     print('Training at fixed diffusion time: {:d}'.format(config.time_step))
 
-config.DEVICE = 'cuda:0'
-
 # Create path to images and model save
 path_images = config.path_save + 'Images/' + suffix
 path_models = config.path_save + 'Models/' + suffix
@@ -80,8 +70,8 @@ os.makedirs(path_images, exist_ok=True)
 os.makedirs(path_models, exist_ok=True)
 
 os.system('cp run_Unet.py {:s}'.format(path_models + '_run_Unet.py'))
-os.system('cp Utils/loader.py {:s}'.format(path_models + '_loader.py'))
-os.system('cp Utils/cfg.py {:s}'.format(path_models + '_cfg.py'))
+os.system('cp ../Utils/loader.py {:s}'.format(path_models + '_loader.py'))
+os.system('cp ../Utils/cfg.py {:s}'.format(path_models + '_cfg.py'))
 
 # Raw images version
 # loading_func = 'loader.load_{:s}(config, index={:d})'.format(config.DATASET, index)

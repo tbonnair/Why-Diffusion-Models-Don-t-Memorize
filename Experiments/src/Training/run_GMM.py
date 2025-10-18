@@ -7,7 +7,7 @@ import os
 import numpy as np
 import argparse
 
-sys.path.insert(1, './src/Utils/')      # In case we run from Experiments/
+sys.path.insert(1, '../Utils/')      # In case we run from Experiments/
 import Unet
 import Plot
 import Diffusion
@@ -31,7 +31,7 @@ parser.add_argument("-t", "--time", help="Diffusion timestep", type=int)
 args = vars(parser.parse_args())
 print(args)
 
-# Config training
+# Get parameters
 n = args['num']
 d = args['dim']
 seed = args['seed']
@@ -44,17 +44,15 @@ if time_step == -1:
     mode = 'normal'
 else:
     mode = 'fixed_time'
-    
-N_EPOCHS = int(4e6)                        # Fix the number of epochs
 
+# Overwrite config file
 config = Diffusion.TrainingConfig()
 DATASET = 'GMM'
 config.DATASET = DATASET
 config.n_images = n
 config.IMG_SHAPE = (1, d)
 config.BATCH_SIZE = BATCH_SIZE
-n_step_per_epoch = config.n_images // config.BATCH_SIZE
-config.N_STEPS = N_EPOCHS
+config.N_STEPS = int(4e6)
 config.LOSS_SCORE_EMP = False
 config.OPTIM = optim
 if config.OPTIM == 'SGD_Momentum':
@@ -67,17 +65,15 @@ config.time_step = time_step
 suffix = '{:s}{:d}_{:d}_{:d}_{:s}_{:d}_{:.4f}_B{:d}_t{:d}/'.format(config.DATASET, d, config.n_images, n_base,
                                        config.OPTIM, seed, config.LR, BATCH_SIZE, time_step)
 config.DEVICE = device
-config.path_save = './Saves/'
+config.path_save = '../../Saves/'
 
 # Create path to images and model save
-path_images = config.path_save + '/Images/' + suffix
 path_models = config.path_save + '/Models/' + suffix
-os.makedirs(path_images, exist_ok=True)
 os.makedirs(path_models, exist_ok=True)
 
 os.system('cp run_GMM.py {:s}'.format(path_models + '_run_GMM.py'))
-os.system('cp Utils/loader.py {:s}'.format(path_models + '_loader.py'))
-os.system('cp Utils/cfg.py {:s}'.format(path_models + '_cfg.py'))
+os.system('cp ../Utils/loader.py {:s}'.format(path_models + '_loader.py'))
+os.system('cp ../Utils/cfg.py {:s}'.format(path_models + '_cfg.py'))
 
 # Load data
 mu = 1
