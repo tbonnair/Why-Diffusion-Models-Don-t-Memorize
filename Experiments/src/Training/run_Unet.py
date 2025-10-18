@@ -129,7 +129,7 @@ if __name__ == '__main__':
         offset = 0
     
     if offset > 0:
-        path_checkpoint = '../Saves/Models/{:s}/Model_{:d}'.format(suffix, offset)
+        path_checkpoint = config.path_save + '/Models/{:s}/Model_{:d}'.format(suffix, offset)
         model = loader.load_model(model, path_checkpoint)
         model.to(config.DEVICE)
             
@@ -161,4 +161,4 @@ if __name__ == '__main__':
     times_save = np.hstack((times_save1, times_save2))
     
     Diffusion.train(model, trainloader, optimizer, config, df, 
-                    loss_fn, sweeping, times_save, offset, suffix, generate=False)
+                    loss_fn, sweeping, times_save, offset, suffix, generate=True)

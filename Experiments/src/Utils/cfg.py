@@ -4,16 +4,11 @@ def load_config(DATASET):
     config = Diffusion.TrainingConfig()
     config.DATASET = DATASET             # Dataset name
     
-    # Fields common to all datasets
-    config.DEVICE = 'cuda:0'
-    config.LR = 1e-4
-    config.N_STEPS = int(1e6)
-    config.path_save = '../../Saves/'
-    
     if DATASET == 'CelebA':
+        config.path_save = '../../Saves/'
         config.IMG_SHAPE = (1, 32, 32)
         config.BATCH_SIZE = 512
-        config.path_data = '../../../data/celeba/' #img_align_celeba'
+        config.path_data = '../../Data/CelebA/'    # Path to CelebA dataset from Experiments/src/FOLDER/
         config.CENTER = True
         config.STANDARDIZE = False
         config.n_images = 1024
