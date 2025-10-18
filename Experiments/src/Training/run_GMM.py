@@ -7,7 +7,7 @@ import os
 import numpy as np
 import argparse
 
-sys.path.insert(1, '../Utils/')      # In case we run from Experiments/
+sys.path.insert(1, '../Utils/')      # In case we run from Experiments/Training
 import Unet
 import Plot
 import Diffusion

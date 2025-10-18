@@ -8,7 +8,7 @@ import numpy as np
 import argparse
 import glob
 
-sys.path.insert(1, '../Utils/')
+sys.path.insert(1, '../Utils/')     # In case we run from Experiments/Training
 import Unet
 import Plot
 import Diffusion
