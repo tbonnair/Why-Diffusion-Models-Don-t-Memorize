@@ -73,6 +73,7 @@ Parameters:
 cd Experiments/src/Training
 python run_Unet.py -n 1024 -i 0 -s 32 -LR 0.0001 -O Adam -W 32 -t -1
 ```
+The models and generated images along training will be stored in `Experiments/Saves/CelebA32_1024_32_Adam_512_0.0001_index0`.
 
 Parameters:
 - `-n`: Number of training images (1024)
@@ -91,6 +92,8 @@ Example:
 cd Experiments/src/Generation
 python generate.py -D CelebA -n 1024 -i 0 -s 32 -LR 0.0001 -O Adam -W 32 -Ns 100 --device cuda:0
 ```
+It will create a folder `Samples` in `Experiments/Saves/CelebA32_1024_32_Adam_512_0.0001_index0` with multiples subfolders corresponding to the several snapshot of trained models.
+To modify these generation times, you can modify `generate.py`, making sure it fits the models saved in `run_Unet.py` as well.
 
 Parameters:
 - `-D`: Dataset (CelebA)
@@ -102,8 +105,6 @@ Parameters:
 - `-W`: Number of base filters (32)
 - `-Ns`: Number of samples to generate
 - `--device`: device to use (default is cuda:0)
-
-
 
 ## Updating the Environment
 

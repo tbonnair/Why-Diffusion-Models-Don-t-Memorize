@@ -1,8 +1,8 @@
 *script_run.slurm
 .DS_Store
 Experiments/Data
+Experiments/Saves/**
 Experiments/src/Plots/*
-Experiments/src/Saves/*
 Experiments/src/Evaluation/*
 Experiments/src/Analysis/*
 
