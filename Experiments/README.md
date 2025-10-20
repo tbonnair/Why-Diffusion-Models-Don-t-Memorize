@@ -83,6 +83,17 @@ Parameters:
 - `-W`: Number of base filters (32)
 - `-t`: Time step (-1 for normal mode, integer in [0, T-1] for fixed-time training)
 
+### Generation with trained U-Net models
+
+The `generate.py` script allows you to generate samples from trained diffusion models at various training checkpoints. It loads a pre-trained U-Net diffusion model and generates synthetic images using the DDIM (Denoising Diffusion Implicit Models) sampling method.
+Example:
+```bash
+cd Experiments/src/Generation
+python generate.py -D CelebA -s 32 -n 1024 -W 32 -O Adam -B 512 -LR 0.0001 -i 0 -Ns 100 --device cuda:0
+```
+
+
+
 ## Updating the Environment
 
 If you need to install additional packages:

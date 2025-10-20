@@ -299,7 +299,7 @@ def train(model, trainloader, optimizer, config, df, loss_fn,
             
             if shallSave == 1:
                 # Save model
-                p = config.path_save + 'Models/' + suffix + 'Model_{:d}'.format(n_steps)
+                p = config.path_save + suffix + 'Models/' + 'Model_{:d}'.format(n_steps)
                 torch.save(model.state_dict(), p)
                 
                 if generate:
@@ -307,7 +307,7 @@ def train(model, trainloader, optimizer, config, df, loss_fn,
                     if len(X.shape) == 4: # For images, assumes [B, C, H, W]
                         samples, samples_init = sample_diffusion_from_noise(model, 16, config, df, dim=4)
                         fig = Plot.imshow(samples.cpu(), config.mean, config.std)
-                        fig.savefig(config.path_save + 'Images/' + suffix + 'Sample_{:d}.pdf'.format(n_steps), bbox_inches='tight')
+                        fig.savefig(config.path_save + suffix + 'Images/' + 'Sample_{:d}.pdf'.format(n_steps), bbox_inches='tight')
                         plt.close('all')
                         
             # Update the bar (every k steps)

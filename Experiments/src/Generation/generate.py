@@ -14,41 +14,36 @@ import loader
 import calc
 
 # Parse arguments (Ngen, device, DATASET, N, n_base, save_every)
-parser = argparse.ArgumentParser()
-parser.add_argument('--n_base', type=int,
-                    help='Base number of filters in the U-Net.')
+parser = argparse.ArgumentParser("Generation of samples from trained diffusion models.")
+
+parser.add_argument("-n", "--num", help="Number of training data", type=int)
+parser.add_argument("-i", "--index", help="Index for the dataset (0 or 1)", type=int)
+parser.add_argument("-s", "--img_size", help="Size of the images used to train", type=int)
+parser.add_argument("-LR", "--learning_rate", help="Learning rate for optimization", type=float)
+parser.add_argument("-O", "--optim", help="Optimisation type (SGD_Momentum or Adam)", type=str)
+parser.add_argument("-W", "--nbase", help="Number of base filters", type=str)
+parser.add_argument("-t", "--time", help="Diffusion timestep", type=int)
+parser.add_argument("-B", "--batch_size", type=int,
+                    help="Batch size used to train the model")
+parser.add_argument('-D', '--dataset', type=str,
+                    help='Dataset used to train the model.')
+parser.add_argument('-Ns', '--Nsamples', type=int,
+                    help='Number of samples to generate (should be multiple of 100).')
 parser.add_argument('--device', type=str,
                     help='Device used to load and apply the model.')
-
-parser.add_argument('--N', type=int,
-                    help='Number of images used to train the model.')
-parser.add_argument('--O', type=str,
-                    help='Optimization mode used to train the model (Adam or SGD_Momentum)')
-parser.add_argument('--LR', type=float,
-                    help='Learning rate used to train the model')
-parser.add_argument('--B', type=int,
-                    help='Batch size used to train the model')
-parser.add_argument('--d', type=int,
-                    help='Dimension of the input data')
-parser.add_argument('--index', type=int,
-                    help='Index of the trained model (0 or 1)')
-parser.add_argument('--dataset', type=str,
-                    help='Dataset used to train the model.')
-parser.add_argument('--Nsamples', type=int,
-                    help='Number of samples to generate (should be multiple of 100).')
 
 args = parser.parse_args()
 print(args)
 DATASET = args.dataset
 config = cfg.load_config(DATASET)   # Load base config for this dataset
-n_base = int(args.n_base)
+n_base = int(args.nbase)
 config.DEVICE = args.device
-config.n_images = int(args.N)
+config.n_images = int(args.num)
 Nsamples = int(args.Nsamples)
-size = int(args.d)
-config.OPTIM = args.O
-config.BATCH_SIZE = int(args.B)
-config.LR = float(args.LR)
+size = int(args.img_size)
+config.OPTIM = args.optim
+config.BATCH_SIZE = int(args.batch_size)
+config.LR = float(args.learning_rate)
 index = int(args.index)
 
 if not Nsamples % 100 == 0:
@@ -91,7 +86,7 @@ training_times2 =  calc.unique_modulus(a, 5000).astype(int)
 a = np.logspace(6, 7, 20)
 training_times3 =  calc.unique_modulus(a, 5000).astype(int)
 training_times = np.hstack((training_times1, training_times2, training_times3))
-training_times = np.unique(training_times)[::2]
+# training_times = np.unique(training_times)[::2]
 
 # Loop over training times
 for (j, checkpoint_id) in enumerate(training_times):
@@ -99,15 +94,15 @@ for (j, checkpoint_id) in enumerate(training_times):
     
     # Load the model
     try:
-        model_suffix = type_model + '/Model_{:d}'.format(checkpoint_id)
-        path_model_diffusion = config.path_save + '/Models/' + model_suffix
+        model_suffix = '/Model_{:d}'.format(checkpoint_id)
+        path_model_diffusion = config.path_save + type_model + '/Models/' + model_suffix
         model_diffusion = loader.load_model(model_diffusion, path_model_diffusion)
     except:
         raise NameError('The checkpoint does not exist: {:s}'.format(path_model_diffusion))
     
     # Loop for generation at the current checkpoint
     for i in range(0, Ns):
-        path_save = config.path_save + '/Samples/' + type_model +'/{:d}/'.format(checkpoint_id)
+        path_save = config.path_save + type_model + '/Samples/' + '{:d}/'.format(checkpoint_id)
         doesExist = os.path.exists(path_save)
         if not doesExist:
             os.makedirs(path_save)

@@ -64,8 +64,8 @@ elif config.mode == 'fixed_time':
     print('Training at fixed diffusion time: {:d}'.format(config.time_step))
 
 # Create path to images and model save
-path_images = config.path_save + 'Images/' + suffix
-path_models = config.path_save + 'Models/' + suffix
+path_images = config.path_save + suffix + 'Images/'
+path_models = config.path_save + suffix + 'Models/'
 os.makedirs(path_images, exist_ok=True)
 os.makedirs(path_models, exist_ok=True)
 
@@ -129,7 +129,7 @@ if __name__ == '__main__':
         offset = 0
     
     if offset > 0:
-        path_checkpoint = config.path_save + '/Models/{:s}/Model_{:d}'.format(suffix, offset)
+        path_checkpoint = config.path_save + '/{:s}/Models/Model_{:d}'.format(suffix, offset)
         model = loader.load_model(model, path_checkpoint)
         model.to(config.DEVICE)
             
@@ -156,6 +156,8 @@ if __name__ == '__main__':
     loss_fn = nn.MSELoss()
     
     sweeping = 1.0
+    
+    # Saving times for the model during training
     times_save1 = np.arange(250, 10000, 250).astype(int)
     times_save2 = np.arange(10000, config.N_STEPS, 5000).astype(int)
     times_save = np.hstack((times_save1, times_save2))

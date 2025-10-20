@@ -20,6 +20,7 @@ def load_config(DATASET):
         config.mode = 'normal'
         config.time_step = -1
         config.DEVICE = 'cuda:0'
+        config.TIMESTEPS = 1000
         
     else:
         raise Exception('Dataset {:s} not implemented'.format(DATASET))
