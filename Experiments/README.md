@@ -7,7 +7,6 @@ This repository contains code for the numerical experiments carried out in the p
 ### Option 1: Automated Setup (Recommended)
 
 Run the setup script:
-
 ```bash
 chmod +x setup_environment.sh
 ./setup_environment.sh
@@ -46,7 +45,6 @@ conda env create -f environment.yml
 ```
 
 ## Activating the Environment
-
 ```bash
 conda activate diffusion-models
 ```
@@ -109,7 +107,6 @@ Parameters:
 ## Updating the Environment
 
 If you need to install additional packages:
-
 ```bash
 conda activate diffusion-models
 conda install <package-name>
@@ -118,7 +115,6 @@ pip install <package-name>
 ```
 
 To update the environment file after adding packages:
-
 ```bash
 conda env export > environment_updated.yml
 ```
