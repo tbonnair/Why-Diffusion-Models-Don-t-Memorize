@@ -89,8 +89,19 @@ The `generate.py` script allows you to generate samples from trained diffusion m
 Example:
 ```bash
 cd Experiments/src/Generation
-python generate.py -D CelebA -s 32 -n 1024 -W 32 -O Adam -B 512 -LR 0.0001 -i 0 -Ns 100 --device cuda:0
+python generate.py -D CelebA -n 1024 -i 0 -s 32 -LR 0.0001 -O Adam -W 32 -Ns 100 --device cuda:0
 ```
+
+Parameters:
+- `-D`: Dataset (CelebA)
+- `-n`: Number of training images (1024)
+- `-i`: Dataset index
+- `-s`: Image size (32)
+- `-LR`: Learning rate (0.0001)
+- `-O`: Optimizer (Adam or SGD_Momentum)
+- `-W`: Number of base filters (32)
+- `-Ns`: Number of samples to generate
+- `--device`: device to use (default is cuda:0)
 
 
 

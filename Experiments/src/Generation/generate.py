@@ -30,7 +30,7 @@ parser.add_argument('-D', '--dataset', type=str,
 parser.add_argument('-Ns', '--Nsamples', type=int,
                     help='Number of samples to generate (should be multiple of 100).')
 parser.add_argument('--device', type=str,
-                    help='Device used to load and apply the model.')
+                    help='Device used to load and apply the model.', default='cuda:0')
 
 args = parser.parse_args()
 print(args)
