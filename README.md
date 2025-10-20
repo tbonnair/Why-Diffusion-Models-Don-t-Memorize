@@ -14,8 +14,6 @@ Contains all numerical experiments and computational code:
 - **Data preprocessing**: CelebA dataset handling.
 - **Model implementations**: U-Net and simple residual network architectures, and diffusion utilities.
 
-See [`Experiments/README.md`](./Experiments/README.md) for detailed setup and usage instructions.
-
 ### [`Theory/`](./Theory/)
 TODO: in prep.
 
@@ -39,4 +37,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For questions about the code or paper, please contact T. Bonnaire (tony.bonnaire@ens.fr) and/or R. Urfin (raphael.urfin@ens.fr)
+For questions about the code or paper, please contact T. Bonnaire (tony.bonnaire@ens.fr) and/or R. Urfin (raphael.urfin@ens.fr).
