@@ -3,7 +3,6 @@
 Experiments/Data
 Experiments/Saves/**
 Experiments/src/Plots/*
-Experiments/src/Evaluation/*
 Experiments/src/Analysis/*
 
 # Byte-compiled / optimized / DLL files

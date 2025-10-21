@@ -38,7 +38,7 @@ seed = args['seed']
 n_base = args['d_embed']
 optim = args['optim']
 device = 'cuda:0'
-BATCH_SIZE = args['bs']
+batch_size = args['bs']
 time_step = args['time']
 if time_step == -1:
     mode = 'normal'
@@ -51,7 +51,7 @@ DATASET = 'GMM'
 config.DATASET = DATASET
 config.n_images = n
 config.IMG_SHAPE = (1, d)
-config.BATCH_SIZE = BATCH_SIZE
+config.BATCH_SIZE = batch_size
 config.N_STEPS = int(4e6)
 config.LOSS_SCORE_EMP = False
 config.OPTIM = optim
@@ -81,7 +81,7 @@ sigma = 1
 X_train, y_train = GMM.generate_GMM(n, d, mu, sigma, seed)
 trainset = X_train.to(torch.float32).to(device)
 
-train_loader = DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True)
+train_loader = DataLoader(trainset, batch_size=batch_size, shuffle=True)
 
 # In[] Model definition
 model = TM.SimpleTimeModel(d=d, d_model=n_base).to(device)

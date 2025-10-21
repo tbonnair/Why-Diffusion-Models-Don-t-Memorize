@@ -86,7 +86,6 @@ training_times2 =  calc.unique_modulus(a, 5000).astype(int)
 a = np.logspace(6, 7, 20)
 training_times3 =  calc.unique_modulus(a, 5000).astype(int)
 training_times = np.hstack((training_times1, training_times2, training_times3))
-# training_times = np.unique(training_times)[::2]
 
 # Loop over training times
 for (j, checkpoint_id) in enumerate(training_times):
