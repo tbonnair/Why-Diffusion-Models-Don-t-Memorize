@@ -19,6 +19,7 @@ def test_imports():
         'PIL': 'Pillow',
         'tqdm': 'tqdm',
         'natsort': 'natsort',
+        'pytorch_fid': 'pytorch_fid',
     }
     
     failed = []
