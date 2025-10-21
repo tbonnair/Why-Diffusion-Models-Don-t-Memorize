@@ -44,16 +44,16 @@ Then run:
 conda env create -f environment.yml
 ```
 
-## Activating the Environment
-```bash
-conda activate memorization
-```
-
 ### Option 3: Manual (with pip)
 Sometimes, conda environment creation from `yml` can be very slow.
 You can alternatively install packages in an environment using the following pip command:
 ```bash
 pip install -r requirements.txt
+```
+
+## Activating the Environment
+```bash
+conda activate memorization
 ```
 
 ## Running the Code
