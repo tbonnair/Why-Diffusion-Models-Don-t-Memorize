@@ -290,8 +290,6 @@ def train(model, trainloader, optimizer, config, df, loss_fn,
     while n_steps < config.N_STEPS:
         for i, X in enumerate(trainloader):
             X = X.to(config.DEVICE)
-            loss, _, = train_one_batch(X, model, optimizer, loss_fn, config, df)
-            n_steps += 1            # Update number of steps
             
             shallSave = n_steps in times_save #(n_steps%save_every == 0)
             if n_steps >= config.N_STEPS:
@@ -309,6 +307,10 @@ def train(model, trainloader, optimizer, config, df, loss_fn,
                         fig = Plot.imshow(samples.cpu(), config.mean, config.std)
                         fig.savefig(config.path_save + suffix + 'Images/' + 'Sample_{:d}.pdf'.format(n_steps), bbox_inches='tight')
                         plt.close('all')
+            
+            loss, _, = train_one_batch(X, model, optimizer, loss_fn, config, df)
+            n_steps += 1            # Update number of steps
+            
                         
             # Update the bar (every k steps)
             if n_steps%k_steps == 0:

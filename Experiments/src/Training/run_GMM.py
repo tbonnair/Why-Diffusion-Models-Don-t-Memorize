@@ -63,12 +63,12 @@ config.mode = mode
 config.time_step = time_step
 
 suffix = '{:s}{:d}_{:d}_{:d}_{:s}_{:d}_{:.4f}_B{:d}_t{:d}/'.format(config.DATASET, d, config.n_images, n_base,
-                                       config.OPTIM, seed, config.LR, BATCH_SIZE, time_step)
+                                       config.OPTIM, seed, config.LR, config.BATCH_SIZE, time_step)
 config.DEVICE = device
 config.path_save = '../../Saves/'
 
 # Create path to images and model save
-path_models = config.path_save + '/Models/' + suffix
+path_models = config.path_save + suffix + '/Models/'
 os.makedirs(path_models, exist_ok=True)
 
 os.system('cp run_GMM.py {:s}'.format(path_models + '_run_GMM.py'))

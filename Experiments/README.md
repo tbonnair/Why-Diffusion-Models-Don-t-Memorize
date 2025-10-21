@@ -88,7 +88,7 @@ The `generate.py` script allows you to generate samples from trained diffusion m
 Example:
 ```bash
 cd Experiments/src/Generation
-python generate.py -D CelebA -n 1024 -i 0 -s 32 -LR 0.0001 -O Adam -W 32 -Ns 100 --device cuda:0
+python generate.py -D CelebA -n 1024 -i 0 -s 32 -B 512 -LR 0.0001 -O Adam -W 32 -Ns 100 --device cuda:0
 ```
 It will create a folder `Samples` in `Experiments/Saves/CelebA32_1024_32_Adam_512_0.0001_index0` with multiples subfolders corresponding to the several snapshot of trained models.
 To modify these generation times, you can modify `generate.py`, making sure it fits the models saved in `run_Unet.py` as well.
@@ -98,11 +98,41 @@ Parameters:
 - `-n`: Number of training images (1024)
 - `-i`: Dataset index
 - `-s`: Image size (32)
+- `-B`: Batch size used to train the model (512)
 - `-LR`: Learning rate (0.0001)
 - `-O`: Optimizer (Adam or SGD_Momentum)
 - `-W`: Number of base filters (32)
 - `-Ns`: Number of samples to generate
 - `--device`: device to use (default is cuda:0)
+
+### Example 4: Computing Memorization Metrics (Memorization fraction)
+
+The `compute_fmem.py` script computes the fraction of generated samples that are in fact memorizing the training data points. It analyzes the k-nearest neighbor distances using a gap ratio analysis.
+
+Example:
+```bash
+cd Experiments/src/Evaluation
+python compute_fmem.py -D CelebA -n 1024 -i 0 -s 32 -LR 0.0001 -O Adam -W 32 -B 512 -Ns 1 --gap_threshold 0.333 --device cuda:0
+```
+
+This will analyze the generated samples from the corresponding model and save memorization metrics to `Experiments/Saves/CelebA32_1024_32_Adam_512_0.0001_index0/Memorization/fraction_collapse.txt`.
+
+Parameters:
+- `-D`: Dataset (CelebA)
+- `-n`: Number of training images (1024)
+- `-i`: Dataset index
+- `-s`: Image size (32)
+- `-LR`: Learning rate (0.0001)
+- `-O`: Optimizer (Adam or SGD_Momentum)
+- `-W`: Number of base filters (32)
+- `-B`: Batch size (512)
+- `-Ns`: Number of sample batches to analyze (basically Ns used in generation divided by 100).
+- `--sample_size`: Size of each sample batch (default: 100)
+- `--gap_threshold`: Gap ratio threshold for collapsed samples (default: 1/3 ≈ 0.333)
+- `--device`: Device to use (cuda:0, cpu)
+- `--plots`: Generate diagnostic plots (optional flag)
+
+**Note**: This script requires that you have already generated samples using `generate.py` (Example 3) for the same model configuration.
 
 ## Updating the Environment
 

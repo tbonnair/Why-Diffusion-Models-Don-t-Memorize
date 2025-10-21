@@ -85,8 +85,7 @@ os.system('cp ../Utils/cfg.py {:s}'.format(path_models + '_cfg.py'))
 # train_images = train_images.to(config.DEVICE)
 
 # Torch Tensor version
-all_images = torch.load(config.path_data + '{:s}{:d}.pt'.format(DATASET, size))
-train_images, testset = loader.load_CelebA_pt(config, all_images, loadtest=False, index=index)
+train_images, testset = cfg.load_training_data(config, index, loadtest=False)
 
 # In[]
 
@@ -158,9 +157,7 @@ if __name__ == '__main__':
     sweeping = 1.0
     
     # Saving times for the model during training
-    times_save1 = np.arange(250, 10000, 250).astype(int)
-    times_save2 = np.arange(10000, config.N_STEPS, 5000).astype(int)
-    times_save = np.hstack((times_save1, times_save2))
+    times_save = cfg.get_training_times()
     
     Diffusion.train(model, trainloader, optimizer, config, df, 
                     loss_fn, sweeping, times_save, offset, suffix, generate=True)

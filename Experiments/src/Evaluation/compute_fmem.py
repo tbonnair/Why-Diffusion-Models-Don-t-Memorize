@@ -17,8 +17,6 @@ import warnings
 sys.path.insert(1, '../Utils/')      # In case we run from Experiments/Evaluation
 import Diffusion as dm
 import cfg
-import loader
-import calc
 
 warnings.filterwarnings("ignore")
 
@@ -74,43 +72,15 @@ def parse_arguments():
     parser.add_argument("-D", "--dataset", help="Dataset used to train the model", type=str, required=True)
     
     # Analysis parameters
-    parser.add_argument("--Nsamples", help="Number of sample batches to analyze", type=int, default=100)
+    parser.add_argument("-Ns", "--Nsamples", help="Number of sample batches to analyze", type=int, default=100)
     parser.add_argument("--sample_size", help="Size of each sample batch", type=int, default=100)
     parser.add_argument("--gap_threshold", help="Gap ratio threshold for collapsed samples", type=float, default=1/3)
     parser.add_argument("--device", help="Device to use (cuda:0, cpu)", type=str, default='cuda:0')
-    parser.add_argument("--plots", help="Generate diagnostic plots", action='store_true')
     
     return parser.parse_args()
 
-
-def get_training_times():
-    """Generate training time checkpoints to analyze."""
-    a = np.logspace(np.log10(250+1), 4, 10)
-    training_times1 = calc.unique_modulus(a, 250).astype(int)
-    a = np.logspace(4, 6, 90)
-    training_times2 = calc.unique_modulus(a, 5000).astype(int)
-    a = np.logspace(6, 7, 10)
-    training_times3 = calc.unique_modulus(a, 5000).astype(int)
-    training_times = np.hstack((training_times1, training_times2, training_times3))
-    return np.unique(training_times)[::2]
-
-
-def load_training_data(config, index):
-    """Load and prepare training data."""
-    loading_func = 'loader.load_{:s}(config, index={:d})'.format(config.DATASET, index)
-    trainset, _ = eval(loading_func)
-    
-    # Load training images into tensor
-    train_images = torch.zeros(size=(config.n_images, config.IMG_SHAPE[0], 
-                                   config.IMG_SHAPE[1], config.IMG_SHAPE[2]))
-    for i in range(config.n_images):
-        train_images[i, :, :] = trainset[i]
-    
-    return train_images.to(config.DEVICE)
-
-
-def compute_fraction_collapsed(training_times, train_images, type_model, config, file_fc,
-                             nsamples, sample_size, gap_threshold, make_plots=False):
+def compute_fraction_mem(training_times, train_images, type_model, config, file_fc,
+                             nsamples, sample_size, gap_threshold):
     """Compute fraction collapsed for all training times."""
     N = np.prod(config.IMG_SHAPE)
     X = train_images.reshape(-1, N).float()
@@ -123,7 +93,7 @@ def compute_fraction_collapsed(training_times, train_images, type_model, config,
         knn_tensor_all = torch.zeros(nsamples * sample_size, k)
         
         for i in range(nsamples):
-            path_save = '../Saves/Samples/' + type_model + '/{:d}/'.format(tau)
+            path_save = config.path_save + type_model + 'Samples/' + '/{:d}/'.format(tau)
             path = path_save + 'generated'
             file_a = path + '/samples_a_{:d}'.format(i)
             
@@ -148,22 +118,22 @@ def compute_fraction_collapsed(training_times, train_images, type_model, config,
         
         # Compute fraction collapsed with bootstrap confidence intervals
         collapsed_samples = np.where(gap_ratio < gap_threshold)[0]
-        fraction_collapsed = len(collapsed_samples) / len(gap_ratio)
+        fraction_mem = len(collapsed_samples) / len(gap_ratio)
         
         if len(collapsed_samples) > 0:
-            fraction_collapsed, std_frac, lower, upper = bootstrap_mean_se(
+            fraction_mem, std_frac, lower, upper = bootstrap_mean_se(
                 gap_ratio.numpy(), gap_threshold
             )
         else:
             std_frac = 0.0
             lower = 0.0
             upper = 0.0
-        
-        pbar.set_description(f'Fmem = {fraction_collapsed*100:.2f}% ± {std_frac*100:.2f}')
-        
+
+        pbar.set_description(f'Fmem = {fraction_mem*100:.2f}% ± {std_frac*100:.2f}')
+
         # Write results to file
         with open(file_fc, "a") as myfile:
-            myfile.write(f"\n{tau:d}\t{fraction_collapsed*100:.3f}\t{std_frac*100:.5f}\t"
+            myfile.write(f"\n{tau:d}\t{fraction_mem*100:.3f}\t{std_frac*100:.5f}\t"
                         f"{lower*100:.5f}\t{upper*100:.5f}")
 
 
@@ -189,19 +159,23 @@ def main():
     )
     
     # Create output directory and file
-    path_file = '../Saves/Memorization/{:s}/'.format(type_model)
-    file_fc = path_file + 'fraction_collapse.txt'
+    path_file = config.path_save + type_model + 'Memorization/'
+    file_fc = path_file + 'fraction_memorized.txt'
+    # Override the file to reset it if already exists
+    if os.path.exists(file_fc):
+        os.remove(file_fc)
     os.makedirs(path_file, exist_ok=True)
     
     # Define training times to analyze
-    training_times = get_training_times()
+    training_times = cfg.get_training_times()
     
-    print(f"Computing fraction collapsed for {len(training_times)} checkpoints...")
+    print(f"Computing memorization fraction for {len(training_times)} checkpoints...")
     print(f"Model: {type_model}")
     print(f"Output file: {file_fc}")
     
     # Load training data
-    train_images = load_training_data(config, args.index)
+    train_images, _ = cfg.load_training_data(config, args.index)
+    train_images = train_images[:config.n_images, :, :, :].to(config.DEVICE)
     
     # Setup diffusion configuration
     df = dm.DiffusionConfig(
@@ -211,7 +185,7 @@ def main():
     )
     
     # Compute fraction collapsed for each checkpoint
-    compute_fraction_collapsed(
+    compute_fraction_mem(
         training_times=training_times,
         train_images=train_images,
         type_model=type_model,
@@ -219,11 +193,10 @@ def main():
         file_fc=file_fc,
         nsamples=args.Nsamples,
         sample_size=args.sample_size,
-        gap_threshold=args.gap_threshold,
-        make_plots=args.plots
+        gap_threshold=args.gap_threshold
     )
     
-    print("Fraction collapsed computation completed!")
+    print("Memorization fraction computation completed!")
 
 
 if __name__ == "__main__":

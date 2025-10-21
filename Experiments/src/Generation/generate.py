@@ -11,7 +11,6 @@ import Unet
 import cfg
 import argparse
 import loader
-import calc
 
 # Parse arguments (Ngen, device, DATASET, N, n_base, save_every)
 parser = argparse.ArgumentParser("Generation of samples from trained diffusion models.")
@@ -78,14 +77,7 @@ batch_gen = 100
 Ns = Nsamples // batch_gen
 
 # Define the training times to sample models
-# TODO: make it better than this hardcoded stuff
-a = np.logspace(np.log10(250+1), 4, 10)
-training_times1 =  calc.unique_modulus(a, 250).astype(int)
-a = np.logspace(4, 6, 90)
-training_times2 =  calc.unique_modulus(a, 5000).astype(int)
-a = np.logspace(6, 7, 20)
-training_times3 =  calc.unique_modulus(a, 5000).astype(int)
-training_times = np.hstack((training_times1, training_times2, training_times3))
+training_times = cfg.get_training_times()
 
 # Loop over training times
 for (j, checkpoint_id) in enumerate(training_times):
