@@ -175,21 +175,6 @@ Parameters:
 
 **Note**: The script temporarily saves images as PNG files for FID computation and automatically cleans them up afterward to save disk space.
 
-## Updating the Environment
-
-If you need to install additional packages:
-```bash
-conda activate memorization
-conda install <package-name>
-# or
-pip install <package-name>
-```
-
-To update the environment file after adding packages:
-```bash
-conda env export > environment_updated.yml
-```
-
 ## Troubleshooting
 
 ### CUDA Version Mismatch
@@ -206,6 +191,7 @@ Make sure you're in the correct directory when running scripts. The code uses re
 - `Experiments/src/Generation/` for generation scripts
 
 ### Memory Issues
+All the code above was tested successfully on NVIDIA RTX 2080 Ti GPUs (12 GB memory).
 If you run out of GPU memory:
 - Reduce batch size (`-B` parameter)
 - Reduce image size (`-s` parameter for CelebA)
