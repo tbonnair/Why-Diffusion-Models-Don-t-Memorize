@@ -73,7 +73,7 @@ def parse_arguments():
     
     # Analysis parameters
     parser.add_argument("-Ns", "--Nsamples", help="Number of sample batches to analyze", type=int, default=100)
-    parser.add_argument("--sample_size", help="Size of each sample batch", type=int, default=100)
+    parser.add_argument("--batch_sample_size", help="Size of each sample batch", type=int, default=100)
     parser.add_argument("--gap_threshold", help="Gap ratio threshold for collapsed samples", type=float, default=1/3)
     parser.add_argument("--device", help="Device to use (cuda:0, cpu)", type=str, default='cuda:0')
     
@@ -161,8 +161,7 @@ def main():
     # Create output directory and file
     path_file = config.path_save + type_model + 'Memorization/'
     file_fc = path_file + 'fraction_memorized.txt'
-    # Override the file to reset it if already exists
-    if os.path.exists(file_fc):
+    if os.path.exists(file_fc):     # Remove existing file
         os.remove(file_fc)
     os.makedirs(path_file, exist_ok=True)
     
@@ -192,7 +191,7 @@ def main():
         config=config,
         file_fc=file_fc,
         nsamples=args.Nsamples,
-        sample_size=args.sample_size,
+        sample_size=args.batch_sample_size,
         gap_threshold=args.gap_threshold
     )
     

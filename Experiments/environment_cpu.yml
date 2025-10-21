@@ -1,16 +1,11 @@
-name: diffusion-models
+name: memorization
 channels:
-  - pytorch
   - conda-forge
+  - pytorch
   - defaults
 dependencies:
   # Python
   - python=3.10
-  
-  # PyTorch (CPU-only version)
-  - pytorch
-  - torchvision
-  - cpuonly
   
   # Core scientific computing
   - numpy
@@ -30,3 +25,8 @@ dependencies:
   
   # Pip (for any additional packages)
   - pip
+
+  # PyTorch (CPU-only version)
+  - pytorch
+  - torchvision
+  - cpuonly
