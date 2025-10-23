@@ -24,7 +24,7 @@ If you find this work useful for your research, please cite:
 ```bibtex
 @article{Bonnaire2025WhyDiffusionDontMemorize,
   title   = {Why Diffusion Models Don't Memorize: The Role of Implicit Dynamical Regularization in Training},
-  author  = {Bonnaire, Tony and Urfin, Roman and Biroli, Giulio and M{\'e}zard, Marc},
+  author  = {Bonnaire, Tony and Urfin, Raphael and Biroli, Giulio and M{\'e}zard, Marc},
   journal = {arXiv preprint arXiv:2505.17638},
   year    = {2025},
   url     = {https://arxiv.org/abs/2505.17638}
