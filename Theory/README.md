@@ -1,11 +1,7 @@
 ## Codes for the theoretical section
 
 
-
-This repository contains the code reproducing the figures from:
-
-> **"Why Diffusion Models Don’t Memorize:  
-> The Role of Implicit Dynamical Regularization in Training"**  
+This repository contains the theoretical analysis and numerical experiments for the paper Why Diffusion Models Don't Memorize: The Role of Implicit Dynamical Regularization in Training by T. Bonnaire, R. Urfin, G. Biroli and M. Mézard.
 
 
 ---
