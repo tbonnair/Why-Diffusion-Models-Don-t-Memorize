@@ -15,7 +15,9 @@ Contains all numerical experiments and computational code:
 - **Model implementations**: U-Net and simple residual network architectures, and diffusion utilities.
 
 ### [`Theory/`](./Theory/)
-TODO: in prep., I will put the code to train an RFNN, the code to compute the eigenvalue density from the saddle point equations and the codes to do the figures maybe?
+TODO: in prep.
+Contains the numerical codes used to create the figures of the theoretical section.
+
 
 ## Citation
 
