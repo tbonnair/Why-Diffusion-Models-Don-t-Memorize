@@ -1,0 +1,151 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import sys
+import os
+import numpy as np
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
+Psi_p=int(float(sys.argv[1]))
+Psi_n=int(float(sys.argv[2]))
+d = int(float(sys.argv[3]) ) # Dimension of W columns and x vectors
+t = float(sys.argv[4])  # diffusion time
+
+a_t=np.exp(-t)
+delta_t=1-a_t**2
+
+
+p = Psi_p*d # Dimension of W rows
+n = Psi_n*d # Number of data points
+lambda_reg = 0.001  # Regularization parameter
+learning_rate = (1e-4)*d/delta_t
+num_epochs = int(5e6)
+
+# Generate random matrix W
+W = torch.randn(p, d, device=device)
+
+# Initialize learnable parameter A
+A = torch.zeros(d, p, requires_grad=True, device=device)
+
+# Generate data points x_i
+x = torch.randn(n, d, device=device)
+
+# Define the model S_A(x)
+def model(x):
+    return (A @ torch.tanh(W @ x.T / torch.sqrt(torch.tensor(d)))).T
+
+# Define the loss function
+def loss_function(A, x, eta):
+    S_A_x = model(a_t*x + np.sqrt(delta_t) * eta)
+    l2_norm_term = torch.sum(( np.sqrt(delta_t)* S_A_x + eta) ** 2)/(d*n)
+    frobenius_norm_term = (delta_t) * lambda_reg * torch.sum(A ** 2) / (d )
+    return l2_norm_term + frobenius_norm_term
+
+def train_loss(A, x):
+    with torch.no_grad():
+        total_loss = 0
+        m = 100
+        for _ in range(m):
+            eta = torch.randn(n, d, device=device)
+            S_A_x = model(a_t * x + np.sqrt(delta_t) * eta)
+            loss = torch.sum((np.sqrt(delta_t) * S_A_x + eta) ** 2) / (d * n)
+            total_loss += loss / m
+    return total_loss
+
+def test_loss_macris(A):
+  N=100
+  test_dataset = torch.randn(N, d, device=device)
+  S_A_x = model(test_dataset)
+  loss = torch.sum((S_A_x + test_dataset) ** 2)/(d*N)
+  return loss
+
+def test_loss(A):
+  batch_size=100
+  N = 100 * n
+  test_dataset = torch.randn(N, d, device=device)
+  eta = torch.randn(N, d, device=device)
+
+  total_loss = 0.0
+  num_batches = N // batch_size
+  for i in range(num_batches):
+      x_batch = test_dataset[i*batch_size:(i+1)*batch_size]
+      eta_batch = eta[i*batch_size:(i+1)*batch_size]
+      S_A_x = model(a_t * x_batch + np.sqrt(delta_t) * eta_batch)
+      loss = torch.sum((np.sqrt(delta_t) * S_A_x + eta_batch) ** 2) / (d * N)
+      total_loss += loss.item()
+  return total_loss
+  #N=100*n
+  #test_dataset = torch.randn(N, d, device=device)
+  #eta = torch.randn(N, d, device=device)
+  #S_A_x = model(a_t*test_dataset + np.sqrt(delta_t) * eta)
+  #loss = torch.sum((np.sqrt(delta_t)*S_A_x + eta) ** 2)/(d*N)
+  #return loss
+
+def sample_logarithmically(N, T):
+# Generate N unique samples linearly spaced in log space
+    log_samples = np.linspace(np.log(1), np.log(T), N)
+
+    # Convert back to linear space
+    samples = np.exp(log_samples)
+
+    # Ensure uniqueness by converting to integers and using a set
+    unique_samples = set()
+    for value in samples:
+        int_value = int(value)
+        while int_value in unique_samples:
+            int_value += 1
+        unique_samples.add(int_value)
+
+    # Convert the set back to a sorted list
+    unique_samples = sorted(unique_samples)
+
+    return unique_samples
+
+Sample_times=sample_logarithmically(400,num_epochs)
+
+
+pathToSave='/home/urfin/Diffusion_random_features/Data'
+#pathFolder = '/Psi_p=%.1f_Psi_n=%.1f_d=%.%.0e_eps=%.0e'%(Psi_p,Psi_n,d,epsilon )
+pathFolder = '/Psi_p=%.1f_Psi_n=%.1f_d=%.0e_t=%.0e_GD_rescale_lr' % (Psi_p, Psi_n, d, t)
+os.makedirs( pathToSave + pathFolder  )
+os.chdir( pathToSave + pathFolder )
+
+
+
+
+# Optimizer
+optimizer = optim.SGD([A], lr=learning_rate)
+#optimizer = optim.Adam([A], lr=learning_rate)
+Test_loss=[]
+Train_loss=[]
+Training_time=[]
+# Training loop
+for epoch in range(num_epochs):
+    # Generate noise eta_i
+    eta = torch.randn(n, d, device=device)
+
+    # Compute the loss
+    loss = loss_function(A, x, eta)
+
+    # Perform gradient descent
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+
+    if epoch in Sample_times:
+        with torch.no_grad():
+            test = test_loss(A)
+            train = train_loss(A, x).cpu().detach().numpy()
+       
+        Test_loss.append(test)
+        #Train_loss.append(train_loss(A,x).detach().numpy())
+        Train_loss.append(train)
+        Training_time.append(epoch*learning_rate)
+        np.save('Test_loss',Test_loss)
+        np.save('Train_loss',Train_loss)
+        np.save('Training_time',Training_time)
+
+
+
+
