@@ -6,7 +6,7 @@ This repository contains the codes to reproduce the figures of the theory sectio
 
 ## Description
 
-The script solves the saddle point equations for the Stieltjes transform of the random matrix $U$, and compares the **theoretical spectral density** $ \rho(\lambda)$ with **empirical histograms**.
+The script solves the saddle point equations for the Stieltjes transform of the random matrix $U$, and compares the **theoretical spectral density** $\rho(\lambda)$ with **empirical histograms**.
 
 The model assumes Gaussian data with covariance:
 
