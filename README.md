@@ -16,7 +16,7 @@ Contains all numerical experiments and computational code:
 
 ### [`Theory/`](./Theory/)
 
-Contains the numerical codes used to create the figures of the theoretical section (spectral density of Fig.4 and the training of a Random Features Neural Network for Fig.5).
+Contains the numerical codes used to generate the figures in the theoretical section — namely, the **spectral density (Fig. 4)** and **the training of a Random Features Neural Network (Fig 5.)**.
 
 
 ## Citation
