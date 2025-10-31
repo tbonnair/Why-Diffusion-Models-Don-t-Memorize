@@ -15,8 +15,8 @@ Contains all numerical experiments and computational code:
 - **Model implementations**: U-Net and simple residual network architectures, and diffusion utilities.
 
 ### [`Theory/`](./Theory/)
-TODO: in prep.
-Contains the numerical codes used to create the figures of the theoretical section.
+
+Contains the numerical codes used to create the figures of the theoretical section (spectral density of Fig.4 and the training of a Random Features Neural Network for Fig.5).
 
 
 ## Citation
