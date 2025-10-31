@@ -2,7 +2,7 @@
 
 ----------------------------------------------------------------
 
-This script reproduces the spectral density plots of the paper:
+This script reproduces the spectral density plots (Fig. 4) of the paper:
 
   "Why Diffusion Models Don’t Memorize: The Role of
 Implicit Dynamical Regularization in Training"
@@ -83,9 +83,6 @@ t = args.t
 # -------------------------
 # Model / solver parameters (change as needed)
 # -------------------------
-
-
-
 
 # We will build Sigma as diagonal with half entries = lambda1, half = lambda2
 # (dimension d). If d is odd the extra eigenvalue is lambda1.
@@ -195,7 +192,8 @@ def equations(vars, lambda_val, epsilon, params):
     return eqs
 
 
-def initialization_q(lambda_i, params):
+def solve_equations(lambda_i, params):
+    #the idea is to start from large imaginary part because we know that the solution is q=1/z and then lower slowly the imaginary part until epsilon=1e-9.
     A=100
     z=lambda_i+1j*(A)
     q0 = 1.0 / z
@@ -205,14 +203,9 @@ def initialization_q(lambda_i, params):
     solution = root(equations, [ q_r, q_im,r_r, r_im,s_r,s_im], args=(z.real, A, params), method='lm').x
     for k in range(A,0,-1):
         solution = root(equations, solution, args=(z.real, k,  params), method='lm').x
-    for k in [0.9,0.7,0.5,0.3,0.1,0.01,0.001,0.0001,0.00001,1e-6,1e-7,1e-8,1e-9,]:
+    for k in [0.9,0.7,0.5,0.3,0.1,0.01,0.001,0.0001,0.00001,1e-6,1e-7,1e-8,1e-9]:
         solution = root(equations, solution, args=(z.real, k,  params), method='lm').x
     return solution
-
-
-
-def solve_equations(lambda_val,initialization,params):
-    return root( equations, initialization, args=(lambda_val,0,params), method='lm').x
 
 #range of lambda on which you solve the equations
 lambda_values = np.linspace(-0.1, 60, 300)   # for second bulk
@@ -221,7 +214,7 @@ lambda_values = np.concatenate((np.linspace(-0.1, 0.5, 100),  np.linspace(0.5, 6
 imag_q_values = np.zeros(len(lambda_values))
 
 for i in range(len(lambda_values)):
-  initial_guess=initialization_q(lambda_values[i], params)
+  initial_guess=solve_equations(lambda_values[i], params)
   q_solution =initial_guess[1]
   imag_q_values[i] = (abs(q_solution) / np.pi)
 
@@ -285,7 +278,7 @@ plt.bar(bin_centers,
 
 
 
-plt.ylim(0, 0.008)
+plt.ylim(0, 0.008) #this is for the second bulk. If you want to see the first bulk use plt.ylim(0, 1.5)
 plt.xlim(np.min(lambda_values), np.max(lambda_values))
 plt.xlabel(r'$\lambda$')
 plt.ylabel(r'$\rho(\lambda)$')
